@@ -10,6 +10,16 @@ public class RandomGenerator {
 	private int max;
 	private int randomInt;
 	
+
+	public RandomGenerator(){
+	}
+	
+	private int genRandomNumber(int min, int max){
+		Random ran = new Random();
+		return ran.nextInt(max) + min;
+
+	}
+	
 	public int getMin() {
 		return min;
 	}
@@ -26,24 +36,13 @@ public class RandomGenerator {
 		this.max = max;
 	}
 
-	public int getRandomInt() {
+	public int getRandomInt(int min, int max) {
+		genRandomNumber(min, max);
 		return randomInt;
 	}
 
 	public void setRandomInt(int randomInt) {
 		this.randomInt = randomInt;
-	}
-
-	public RandomGenerator(int min, int max){
-		this.min = min;
-		this.max = max;
-		this.randomInt = genRandomNumber();
-	}
-	
-	private int genRandomNumber(){
-		Random ran = new Random();
-		return ran.nextInt(this.max) + this.min;
-
 	}
 
 }
