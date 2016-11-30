@@ -1,0 +1,7 @@
+name: spawnParkour
+version: 1.0
+description: spawnParkour
+author: abraham-null
+authors: [abraham-null] 
+website: http://ackeron.com
+main: spawnParkour.spawnParkour
