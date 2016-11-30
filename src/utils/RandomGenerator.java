@@ -11,7 +11,8 @@ public class RandomGenerator {
 	private int randomInt;
 	
 
-	public RandomGenerator(){
+	public RandomGenerator(int min, int max){
+		this.randomInt = genRandomNumber(min,max);
 	}
 	
 	private int genRandomNumber(int min, int max){
@@ -36,8 +37,7 @@ public class RandomGenerator {
 		this.max = max;
 	}
 
-	public int getRandomInt(int min, int max) {
-		genRandomNumber(min, max);
+	public int getRandomInt() {
 		return randomInt;
 	}
 

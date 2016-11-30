@@ -28,7 +28,7 @@ public class Game implements Runnable {
 	private List<Location> spawnLocations = new ArrayList<Location>();
 	private Location spawnLoc;
 	private BukkitTask task;
-	private int count = 120;
+	private int count = 0;
 	private Inventory inv;
 	private Chest chest;
 	private Block chestBlock;
@@ -97,7 +97,7 @@ public class Game implements Runnable {
 	}
 
 	private Location randomLocation() {
-		return spawnLocations.get(spawnParkour.getPlugin(spawnParkour.class).randomGenerator.getRandomInt(0, (spawnLocations.size() - 1)));
+		return spawnLocations.get(new RandomGenerator(0, (spawnLocations.size() - 1)).getRandomInt());
 	}
 
 
@@ -111,21 +111,19 @@ public class Game implements Runnable {
 	public boolean stop() {
 	    if (this.task == null) return false;
     	despawnChest(this.spawnLoc);
+    	this.count = 0;
+	    this.task.cancel();
+
     	spawnParkour.getPlugin(spawnParkour.class).setNewSpawnTime(); 
     	spawnParkour.getPlugin(spawnParkour.class).startup();
-	    this.task.cancel();
 	    
 	    return true;
 	}
 
 	public void run() {
-        count--;
-
-        if(count == 60) {
-            oneMinuteWarningMessage();
-        }
-        
-        if(count <= 0) {
+        count++;
+  
+        if(count > 120) {
             stop();
         }
     }

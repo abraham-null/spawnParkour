@@ -16,12 +16,12 @@ public class spawnParkour extends JavaPlugin {
 	public int minSpawnTime = 100;
 	public int maxSpawnTime = 300;
 	public int spawnTime = 100;
-	public RandomGenerator randomGenerator = new RandomGenerator();
 
 	public List<Location> spawnLocations = new ArrayList<Location>();
 
 	@Override
 	public void onDisable() {
+		//test
 	}
 
 	@Override
@@ -37,7 +37,8 @@ public class spawnParkour extends JavaPlugin {
 	}
 
 	public void setNewSpawnTime() {
-		spawnTime = randomGenerator.getRandomInt(minSpawnTime, maxSpawnTime);
+		spawnTime = new RandomGenerator(minSpawnTime, maxSpawnTime).getRandomInt();
+		Bukkit.broadcastMessage("spawnTime: "+spawnTime);
 	}
 
 	public void startup() {
