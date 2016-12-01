@@ -38,6 +38,8 @@ public class Game implements Runnable, Listener {
 	private Inventory inv;
 	private Chest chest;
 	private Block chestBlock;
+	private List<Location> blockLocations = new ArrayList<Location>();
+			
 	
 
 	public Game() {
@@ -91,15 +93,16 @@ public class Game implements Runnable, Listener {
 		for(String s : spawnParkour.getPlugin(spawnParkour.class).parkourBlocks.keySet()){
 			String str = s;
 			Location loc = spawnParkour.getPlugin(spawnParkour.class).locationHandler.str2loc(s);
-			Bukkit.broadcastMessage(loc.toString());
+			this.blockLocations.add(loc);
 			loc.getBlock().setType(spawnParkour.getPlugin(spawnParkour.class).parkourBlocks.get(s));
 		}
 	}
 	
+	
+	
 	private void despawnBlocks(){
-		for(String s : spawnParkour.getPlugin(spawnParkour.class).parkourBlocks.keySet()){
-			Location loc = spawnParkour.getPlugin(spawnParkour.class).locationHandler.str2loc(s);
-			loc.getBlock().setType(Material.AIR);
+		for(Location location : this.blockLocations){
+			location.getBlock().setType(Material.AIR);
 		}
 	}
 
@@ -164,9 +167,13 @@ public class Game implements Runnable, Listener {
 
     	spawnParkour.getPlugin(spawnParkour.class).setNewSpawnTime(); 
     	spawnParkour.getPlugin(spawnParkour.class).startup();
-	    
-	    return true;
+		return false;
+	
 	}
+	
+	public void onDestroy(){
+		 stop();
+		}
 
 	public void run() {
         count++;

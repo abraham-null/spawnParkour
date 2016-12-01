@@ -42,7 +42,7 @@ public class spawnParkour extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-		//test
+		despawnALL();
 	}
 
 	@Override
@@ -78,6 +78,7 @@ public class spawnParkour extends JavaPlugin {
 			blockLocations.add(locationHandler.str2loc(s));
 		}
 		
+		despawnALL();
 		setNewSpawnTime();
 		startup();
 	}
@@ -101,6 +102,19 @@ public class spawnParkour extends JavaPlugin {
 			}
 		}.runTaskLater(this, spawnTime * 20);
 
+	}
+	
+	public void despawnALL(){
+		for(String s : parkourBlocks.keySet()){
+			Location loc = locationHandler.str2loc(s);
+			loc.getBlock().setType(Material.AIR);
+		}
+		
+		for(String s : chestBlocks.keySet()){
+			Location loc = locationHandler.str2loc(s);
+			loc.getBlock().setType(Material.AIR);
+		}
+		
 	}
 	
 	// -------------------------------------------------------------------------------------
