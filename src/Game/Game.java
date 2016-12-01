@@ -86,6 +86,22 @@ public class Game implements Runnable, Listener {
 		inv.addItem(diamond_sword, web, gold_boots, fish, golden_apple, enderpearl);
 
 	}
+	
+	private void spawnBlocks(){
+		for(String s : spawnParkour.getPlugin(spawnParkour.class).parkourBlocks.keySet()){
+			String str = s;
+			Location loc = spawnParkour.getPlugin(spawnParkour.class).locationHandler.str2loc(s);
+			Bukkit.broadcastMessage(loc.toString());
+			loc.getBlock().setType(spawnParkour.getPlugin(spawnParkour.class).parkourBlocks.get(s));
+		}
+	}
+	
+	private void despawnBlocks(){
+		for(String s : spawnParkour.getPlugin(spawnParkour.class).parkourBlocks.keySet()){
+			Location loc = spawnParkour.getPlugin(spawnParkour.class).locationHandler.str2loc(s);
+			loc.getBlock().setType(Material.AIR);
+		}
+	}
 
 	private void emptyChest(){
 		this.inv.clear();
@@ -113,7 +129,7 @@ public class Game implements Runnable, Listener {
 	
 	private void oneMinuteWarningMessage(){
 		Bukkit.broadcastMessage(ChatColor.YELLOW.toString() + "-------------------------------------");
-		Bukkit.broadcastMessage(ChatColor.AQUA.toString() + "The " + ChatColor.YELLOW.toString() + "Hero Chest" + ChatColor.AQUA.toString() + "will");
+		Bukkit.broadcastMessage(ChatColor.AQUA.toString() + "The " + ChatColor.YELLOW.toString() + "Hero Chest" + ChatColor.AQUA.toString() + " will despawn in 1 minute.");
 		Bukkit.broadcastMessage(ChatColor.YELLOW.toString() + "-------------------------------------");
 	}
 	
@@ -134,6 +150,7 @@ public class Game implements Runnable, Listener {
 	public boolean start() {
 	    if (this.task != null) return false; //Already running
 	    spawnChest();
+	    spawnBlocks();
 	    this.task = Bukkit.getScheduler().runTaskTimer(spawnParkour.getPlugin(spawnParkour.class), this, 20L, 20L); //Schedule task
 	    return true;
 	}
@@ -141,6 +158,7 @@ public class Game implements Runnable, Listener {
 	public boolean stop() {
 	    if (this.task == null) return false;
     	despawnChest(this.spawnLoc);
+    	despawnBlocks();
     	this.count = 0;
 	    this.task.cancel();
 
