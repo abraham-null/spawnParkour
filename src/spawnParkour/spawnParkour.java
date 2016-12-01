@@ -13,8 +13,8 @@ import utils.RandomGenerator;
 
 public class spawnParkour extends JavaPlugin {
 
-	public int minSpawnTime = 100;
-	public int maxSpawnTime = 300;
+	public int minSpawnTime = 20;
+	public int maxSpawnTime = 30;
 	public int spawnTime = 100;
 
 	public List<Location> spawnLocations = new ArrayList<Location>();

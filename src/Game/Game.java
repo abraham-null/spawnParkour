@@ -5,10 +5,16 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
@@ -16,7 +22,7 @@ import org.bukkit.scheduler.BukkitTask;
 import spawnParkour.spawnParkour;
 import utils.RandomGenerator;
 
-public class Game implements Runnable {
+public class Game implements Runnable, Listener {
 	
 	private spawnParkour plugin;
 
@@ -36,11 +42,29 @@ public class Game implements Runnable {
 
 	public Game() {
 
+		 spawnParkour.getPlugin(spawnParkour.class).getServer().getPluginManager().registerEvents(this, spawnParkour.getPlugin(spawnParkour.class));
 		this.count = 0;
 		this.spawnLocations = spawnParkour.getPlugin(spawnParkour.class).spawnLocations;
 		this.spawnLoc = randomLocation();
 		
 		start();
+	}
+
+	@SuppressWarnings("deprecation")
+	@EventHandler 
+	private void invClose(InventoryOpenEvent e){
+		if(e.getInventory().equals(this.inv)){
+			Player p = (Player) e.getPlayer();
+			chestOpenedMessage(p.getName());
+			Bukkit.getWorld("world_start").spigot().playEffect(this.chest.getLocation(), Effect.EXPLOSION_HUGE);
+		}
+	}
+	
+	@EventHandler 
+	private void invClose(InventoryCloseEvent e){
+		if(e.getInventory().equals(this.inv)){
+			stop();
+		}
 	}
 
 
@@ -67,9 +91,15 @@ public class Game implements Runnable {
 		this.inv.clear();
 	}
 	
+	private void chestOpenedMessage(String playerName){
+		Bukkit.broadcastMessage(ChatColor.YELLOW.toString() + "-------------------------------------");
+		Bukkit.broadcastMessage(ChatColor.AQUA.toString() + "A " + ChatColor.YELLOW.toString() + "Hero Chest"+ ChatColor.AQUA.toString() + " has been claimed by: " + ChatColor.YELLOW.toString() + playerName);
+		Bukkit.broadcastMessage(ChatColor.YELLOW.toString() + "-------------------------------------");
+	}
+	
 	private void chestSpawnedMessage(){
 		Bukkit.broadcastMessage(ChatColor.YELLOW.toString() + "-------------------------------------");
-		Bukkit.broadcastMessage(ChatColor.AQUA.toString() + "A " + ChatColor.YELLOW.toString() + "Hero Chest"+ ChatColor.AQUA.toString() + "has just spawned!.");
+		Bukkit.broadcastMessage(ChatColor.AQUA.toString() + "A " + ChatColor.YELLOW.toString() + "Hero Chest"+ ChatColor.AQUA.toString() + " has just spawned!.");
 		Bukkit.broadcastMessage(ChatColor.AQUA.toString() + "Find it on one of the floating islands @ spawn to claim its contents.");
 		Bukkit.broadcastMessage(ChatColor.YELLOW.toString() + "-------------------------------------");
 	}
@@ -83,8 +113,7 @@ public class Game implements Runnable {
 	
 	private void oneMinuteWarningMessage(){
 		Bukkit.broadcastMessage(ChatColor.YELLOW.toString() + "-------------------------------------");
-		Bukkit.broadcastMessage(ChatColor.AQUA.toString() + "No one was able to find the " + ChatColor.YELLOW.toString() + "Hero Chest");
-		Bukkit.broadcastMessage(ChatColor.AQUA.toString() + "The Chest has despawned.");
+		Bukkit.broadcastMessage(ChatColor.AQUA.toString() + "The " + ChatColor.YELLOW.toString() + "Hero Chest" + ChatColor.AQUA.toString() + "will");
 		Bukkit.broadcastMessage(ChatColor.YELLOW.toString() + "-------------------------------------");
 	}
 	
@@ -92,12 +121,13 @@ public class Game implements Runnable {
 		
 		emptyChest();
 		spawnLoc.getBlock().setType(Material.AIR);
-		chestDespawnedMessage();
 
 	}
 
 	private Location randomLocation() {
-		return spawnLocations.get(new RandomGenerator(0, (spawnLocations.size() - 1)).getRandomInt());
+		int spawnNum = new RandomGenerator(0, (spawnLocations.size() - 1)).getRandomInt();
+		Bukkit.broadcastMessage("islane num: " + spawnNum);
+		return spawnLocations.get(spawnNum);
 	}
 
 
@@ -123,7 +153,12 @@ public class Game implements Runnable {
 	public void run() {
         count++;
   
+        if(count == 60) {
+    		oneMinuteWarningMessage();
+        }
+        
         if(count > 120) {
+    		chestDespawnedMessage();
             stop();
         }
     }
